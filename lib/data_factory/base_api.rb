@@ -168,27 +168,37 @@ module DataFactory
       when 'DATE', 'DATETIME', 'TIMESTAMP'
         Time.now
       when 'NUMBER', 'INTEGER'
-        # random numbers is very much beta and very untested.
-        #
-        # 38 digits total, 28 before decimal point, and 10 after.
-        precision = 38
-        scale     = 10
-        if col.data_precision
-          precision = col.data_precision
-        end
-        if col.data_scale
-          scale = col.data_scale
+        scale = 2
+        if col.data_scale && col.data_scale == 0
+          1
+        else
+          22.23
         end
 
-        if scale == 0
-          # its an integer
-          random_integer(10**col.data_precision - 1)
-        else
-          # its a number
-          max_left  = 10**(precision - scale) - 1
-          max_right = 10**scale - 1
-          "#{random_integer(max_left)}.#{random_integer(max_right)}".to_f
-        end
+      #   # random numbers is very much beta and very untested.
+      #   #
+      #   # 38 digits total, 28 before decimal point, and 10 after.
+      #   precision = 38
+      #   scale     = 10
+      #   if col.data_precision
+      #     precision = col.data_precision
+      #   end
+      #   if col.data_scale
+      #     scale = col.data_scale
+      #   end
+
+      #   if scale == 0
+      #     # its an integer
+      #     random_integer(10**col.data_precision - 1)
+      #   else
+      #     # its a number
+      #     max_left  = 10**(precision - scale) - 1
+      #     max_right = 10**scale - 1
+      #     "#{random_integer(max_left)}.#{random_integer(max_right)}".to_f
+      #   end
+      when 'NUMBER'
+        23.34
+      when 'INTEGER'
       else
         nil
       end

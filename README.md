@@ -16,13 +16,18 @@ There are no strict dependencies for DataFactory to work, and it is a pure Ruby 
 
 However, DataFactory doesn't actually have a database access layer built in, as it is designed to use an external access layer that knows how to connect and query the database. 
 
-If you can use JRuby, consider using Simple JDBC Oracle to interact with your database. If you cannot use JRuby, implementing your own database interface is simple. Create a class that handles creating a database connection, and implement the following two methods to run SQL statements on the database, and issue commits:
+If you can use JRuby, consider using Simple JDBC Oracle to interact with your database. If you cannot use JRuby, implementing your own database interface is simple. Create a class that handles creating a database connection, and implement the following three methods to run SQL statements on the database, and issue commits:
 
     def execute_sql(statement, *binds)
     end
 
     def commit
     end
+
+    def each_array(&blk)
+    end
+
+The first two methods are fairly obvious. The each_array method is expected to iterate over the result set returned by the executed sql statement, passing an array of columns to the block for each row returned. The array should contain the value of each column in Ruby types, ie not Java types if using JRuby.
 
 The OCI8 gem is pretty good place to start if you are using MRI Ruby, but you will need the Oracle client installed. Raw JDBC can get the job done if you are using JRuby and you do not want to use Simple JDBC Oracle.
 

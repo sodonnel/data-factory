@@ -142,6 +142,7 @@ class BaseAPITest < Test::Unit::TestCase
   def test_run_insert_invokes_execute_on_db_interface
     instance = @klass.new
     instance.generate_column_data
+    instance.generate_insert
     @dbinterface.expects(:execute_sql).returns(@dbinterface)
     instance.run_insert
   end

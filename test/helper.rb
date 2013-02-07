@@ -5,7 +5,7 @@ $:.unshift File.expand_path(File.dirname(__FILE__))
 #require 'simple_oracle_jdbc'
 require 'data_factory'
 require 'test/unit'
-require 'mocha'
+require 'mocha/setup'
 
 module TestHelper
 
@@ -26,6 +26,7 @@ module TestHelper
       self
     end
 
+    # Mock out returing a list of columns for a table.
     def each_array(&blk)
       data = [
               # cname, type       len  precision, scale, position, nullable
