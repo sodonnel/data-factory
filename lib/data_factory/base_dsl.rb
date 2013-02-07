@@ -40,12 +40,17 @@ module DataFactory
     #     def execute_sql(statement, *binds)
     #     end
     #
+    #     def each_array(&blk)
+    #     end
+    #
     #     def commit
     #     end
     #
     # This method is normally called on the DataFactory::Base class. It will
     # set a class variable (@@db_interface) in the Base class which is shared
     # by all sub-classes of the class.
+    #
+    # Ideally use the SimpleOracleJDBC gem to provide the interface
     def set_database_interface(interface)
       class_variable_set("@@db_interface", interface)
     end

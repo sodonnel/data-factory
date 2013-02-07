@@ -18,6 +18,8 @@ However, DataFactory doesn't actually have a database access layer built in, as 
 
 If you can use JRuby, consider using Simple JDBC Oracle to interact with your database. If you cannot use JRuby, implementing your own database interface is simple. Create a class that handles creating a database connection, and implement the following three methods to run SQL statements on the database, and issue commits:
 
+    # should return an object that implements the each_array method
+    # below
     def execute_sql(statement, *binds)
     end
 
