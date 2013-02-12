@@ -10,7 +10,7 @@ module DataFactory
     # defaults set for the columns, and will override the defaults if passed. For example:
     #
     # obj = Employee.create!(:last_name => 'Smith')
-    def create!(params)
+    def create!(params=Hash.new)
       df = create(params)
       df.commit
       df
@@ -20,7 +20,7 @@ module DataFactory
     # For example:
     #
     # obj = Employee.create(:last_name => 'Smith')
-    def create(params)
+    def create(params=Hash.new)
       df = build(params)
       df.generate_insert
       df.run_insert
@@ -31,7 +31,7 @@ module DataFactory
     # into the database. For example:
     #
     # obj = Employee.build(:last_name => 'Smith')
-    def build(params)
+    def build(params=Hash.new)
       df = self.new
       df.generate_column_data(params)
       df
