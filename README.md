@@ -16,7 +16,7 @@ There are no strict dependencies for DataFactory to work, and it is a pure Ruby 
 
 However, DataFactory doesn't actually have a database access layer built in, as it is designed to use an external access layer that knows how to connect and query the database. 
 
-If you can use JRuby, consider using Simple JDBC Oracle to interact with your database. If you cannot use JRuby, implementing your own database interface is simple. Create a class that handles creating a database connection, and implement the following three methods to run SQL statements on the database, and issue commits:
+If you can use JRuby, consider using Simple JDBC Oracle to interact with your database. If you cannot use JRuby, implementing your own database interface is not too difficult. Create a class that handles creating a database connection, and implement the following three methods to run SQL statements on the database, and issue commits:
 
     # should return an object that implements the each_array method
     # below
@@ -29,7 +29,7 @@ If you can use JRuby, consider using Simple JDBC Oracle to interact with your da
     def each_array(&blk)
     end
 
-The first two methods are fairly obvious. The each_array method is expected to iterate over the result set returned by the executed sql statement, passing an array of columns to the block for each row returned. The array should contain the value of each column in Ruby types, ie not Java types if using JRuby.
+The first two methods are fairly obvious. The each_array method is expected to iterate over the result set returned by the executed sql statement, ie execute_sql should return an object that responds to each_array. The each_array method accepts a block, and will pass an array to the block for each row in the result set. The array passed to the block should contain an element for each column selected by the original query. The array should contain the value of each column in Ruby types, ie not Java types if using JRuby.
 
 The OCI8 gem is pretty good place to start if you are using MRI Ruby, but you will need the Oracle client installed. Raw JDBC can get the job done if you are using JRuby and you do not want to use Simple JDBC Oracle.
 
@@ -44,7 +44,7 @@ For these examples to run, create a table on the database as follows:
                             first_name varchar2(50),
                             last_name  varchar2(50),
                             email      varchar2(50),
-                            ssn        varchar2(10));
+                            ssn        varchar2(10) not null);
 
 ## Define a DataFactory Class
 
@@ -85,6 +85,28 @@ The create! call will take the column defaults defined in the Employee class, an
 
 An Employee instance is returned, containing all the generated values.
 
+There is also a create method that works just like create! but does not issue a commit.
+
+Finally there is a build method that creates an instance of the class with default and generated values, but does not insert it into the database at all.
+
+## Accessing The Column Values
+
+When an instance of a DataFactory class is created, you can access the generated values for the columns with the column_values method, which returns a hash. The keys of the hash are the uppercase column names and the values contain the generated data:
+
+    f.column_values.keys.each do |k|
+      puts "#{k} :: #{f.column_values[k]}"
+    end
+
+    # EMP_ID :: 1001
+    # DEPT_ID ::
+    # FIRST_NAME ::
+    # LAST_NAME :: Smith
+    # EMAIL :: 4506@5941.com
+    # SSN :: Gb3
+
+Notice how columns that are nullable, have not got a default value and were not passed a value are generated with null values.
+
+
 ## Putting It Together
 
 Combining each of the steps above, gives the following script:
@@ -114,7 +136,7 @@ Combining each of the steps above, gives the following script:
     f = Employee.create!("emp_id" => 1001)
     
     f.column_values.keys.each do |k|
-      puts f.column_values[k]
+      puts "#{k} :: #{f.column_values[k]}"
     end
 
 ## Other Methods

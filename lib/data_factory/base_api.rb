@@ -170,7 +170,7 @@ module DataFactory
       when 'NUMBER', 'INTEGER'
         scale = 2
         if col.data_scale && col.data_scale == 0
-          1
+          random_integer(9999)
         else
           22.23
         end
