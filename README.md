@@ -1,6 +1,6 @@
 # DataFactory
 
-DataFactory is a simple Ruby gem that generates data random test data and inserts it into database tables. It was created to help with unit testing in a project that had database tables having many (50+) columns, and manually crafing insert statements was tedious and error prone.
+DataFactory is a simple Ruby gem that generates random test data and inserts it into database tables. It was created to help with unit testing in a project that had database tables having many (50+) columns, and manually crafing insert statements was tedious and error prone.
 
 DataFactory reads the table definition from the database, and generates random values for all not null columns. It inserts this data into the table, while providing the option of specifying non-random defaults.
 
@@ -143,7 +143,36 @@ Combining each of the steps above, gives the following script:
 
 The sample above illustrates how the create! method returns an Employee object, giving access to the generated values. For an overview of other methods browse the documentation for the base_api, base_dsl and base_factory methods.
 
+## Using multiple Database connections
 
+If you look at the source for the Base class, you can see it doesn't define any methods on its own:
+
+    class Base
+    
+      extend BaseDSL
+      extend BaseFactory
+    
+      include BaseAPI
+    
+    end
+
+In the examples above, the database interface is set by calling the set_database_interface method on Base:
+
+    DataFactory::Base.set_database_interface(interface)
+
+Behind the scenes, this sets a class variable which is inherited by all other classes that inherit from Base - in other words, once you set the database interface on Base, that connection is shared by all sub classes.
+
+This creates a problem if you need to have connections to multiple databases, with some Data Factory classes pointing to one database and other to another. To work around this, you can easily create a new Base class to inherit from, by including the relevant Data Factory modules:
+
+    class NewBase
+      extend DataFactory::BaseDSL
+      extend DataFactory::BaseFactory
+
+      include DataFactory::BaseAPI
+
+    end
+
+I may make improvements in the future to remove this limitation and improve the design.
 
 
 
