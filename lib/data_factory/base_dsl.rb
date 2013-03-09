@@ -32,7 +32,7 @@ module DataFactory
 
   module BaseDSL
 
-    attr_reader :table_name, :column_details, :column_defaults, :meta_data_loaded
+    attr_reader :table_name, :column_details, :column_defaults, :meta_data_loaded, :populate_nullable_columns
 
     # Pass a database interface object to be used by all DataFactory sub-classes
     # The interface must implement the following two methods:
@@ -67,6 +67,19 @@ module DataFactory
     # all instances of the class, but is not inherited with subclasses.
     def set_table_name(tab)
       @table_name = tab.to_s.upcase
+      @populate_nullable_columns = false
+    end
+
+    # By default, no values will be generated for columns that can be null. By calling this
+    # method in the class defintion, it will set @populate_nullable_columns to true, which will
+    # cause values to be generated for nullable columns in the same way as for not null columns
+    # @example
+    #    class MyTab < DataFactory::Base
+    #      set_table_name 'my_table'
+    #      populate_nullable_columns
+    #    end
+    def set_populate_nullable_columns
+      @populate_nullable_columns = true
     end
 
     # Sets the default value to be used for a column if nothing else is

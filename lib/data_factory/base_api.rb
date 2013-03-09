@@ -159,7 +159,7 @@ module DataFactory
 
     def generate_value(col)
       if col.nullable?
-        return nil
+        return nil unless self.class.populate_nullable_columns
       end
 
       case col.data_type
