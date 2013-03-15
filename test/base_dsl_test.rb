@@ -99,11 +99,20 @@ class BaseDSLTest < Test::Unit::TestCase
   def test_column_detail_raises_exception_if_column_does_not_exist
     @klass.set_database_interface(DBInterfaceMock.new)
     @klass.set_table_name(:foobar)
-    assert_raises DataFactory::ColumnNotInTable do
+    assert_raises DataFactory::ColumnNotInTable do |e|
       assert(@klass.column_detail('COLNOTTHERE').is_a?(DataFactory::Column))
     end
   end
 
+  def test_error_message_contains_column_name_when_column_does_not_exist
+    @klass.set_database_interface(DBInterfaceMock.new)
+    @klass.set_table_name(:foobar)
+    begin
+      @klass.column_detail('COLNOTTHERE').is_a?(DataFactory::Column)
+    rescue DataFactory::ColumnNotInTable => e
+      assert_match(/COLNOTTHERE is not/, e.to_s)
+    end
+  end
 
 end
 

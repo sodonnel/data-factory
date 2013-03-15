@@ -235,7 +235,7 @@ module DataFactory
     def validate_columns(params)
       params.keys.each do |k|
         unless column_details.has_key? k.upcase
-          raise DataFactory::ColumnNotInTable
+          raise DataFactory::ColumnNotInTable, "Column #{k.upcase} is not in #{table_name}"
         end
       end
     end

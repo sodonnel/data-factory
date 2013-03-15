@@ -138,6 +138,12 @@ class BaseAPITest < Test::Unit::TestCase
     assert_raises DataFactory::ColumnNotInTable do
       instance.generate_column_data(:notexist => 'OVERRIDE')
     end
+    # Also ensure the error message contains the column name
+    begin
+      instance.generate_column_data(:notexist => 'OVERRIDE')
+    rescue DataFactory::ColumnNotInTable => e
+      assert_match(/NOTEXIST is not in/, e.to_s)
+    end
   end
 
 

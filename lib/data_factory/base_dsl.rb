@@ -118,7 +118,7 @@ module DataFactory
       load_meta_data unless meta_data_loaded
 
       unless @column_details.has_key?(column_name.to_s.upcase)
-        raise DataFactory::ColumnNotInTable
+        raise DataFactory::ColumnNotInTable, "Column #{column_name.to_s.upcase} is not in #{table_name}"
       end
 
       @column_details[column_name.to_s.upcase]
@@ -180,7 +180,7 @@ module DataFactory
 
     def validate_column_default(column_name, column_value)
       unless @column_details.has_key? column_name
-        raise DataFactory::ColumnNotInTable, column_name
+        raise DataFactory::ColumnNotInTable, "Column #{column_name.to_s.upcase} is not in #{table_name}"
       end
     end
 
