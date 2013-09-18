@@ -148,7 +148,7 @@ module DataFactory
     # Oracle specific.
     def quote_value(col)
       case column_detail(col).data_type
-      when 'CHAR', 'VARCHAR2', 'CLOB'
+      when 'CHAR', 'VARCHAR2', 'CLOB', 'RAW'
         "'#{@column_values[col]}'"
       when 'DATE', 'DATETIME'
         "to_date('#{@column_values[col].strftime('%Y%m%d %H:%M:%S')}', 'YYYYMMDD HH24:MI:SS')"
@@ -165,6 +165,8 @@ module DataFactory
       case col.data_type
       when 'CHAR', 'VARCHAR2', 'CLOB'
         random_string_upto_length(col.data_length)
+      when 'RAW'
+        random_hex_string_upto_length(col.data_length)
       when 'DATE', 'DATETIME', 'TIMESTAMP'
         Time.now
       when 'NUMBER', 'INTEGER'
@@ -206,7 +208,7 @@ module DataFactory
 
     def column_type_to_ruby_type(col)
       case col.data_type
-      when 'CHAR', 'VARCHAR2', 'CLOB'
+      when 'CHAR', 'VARCHAR2', 'CLOB', 'RAW'
         String
       when 'DATE', 'DATETIME', 'TIMESTAMP'
         Time

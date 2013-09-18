@@ -116,7 +116,7 @@ class BaseAPITest < Test::Unit::TestCase
   def test_generate_data_generates_column_data_if_column_not_nullable
     instance = @klass.new
     instance.generate_column_data
-    assert_not_nil(instance.column_value('COL3'))
+    assert_not_nil(instance.column_value('COL4'))
   end
 
   def test_generate_data_default_used_for_column_when_present
