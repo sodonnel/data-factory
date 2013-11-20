@@ -143,7 +143,7 @@ module DataFactory
 
       table_details_sql = "select column_name,
                                   data_type,
-                                  data_length,
+                                  nvl(char_length, data_length),
                                   data_precision,
                                   data_scale,
                                   column_id,
