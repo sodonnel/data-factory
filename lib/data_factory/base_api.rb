@@ -178,6 +178,7 @@ module DataFactory
           max_precision = col.data_precision < 10 ? col.data_precision : 10
           random_integer((10**max_precision) - 1)
         else
+          # TODO - generate actual random number obeying presision and scale
           22.23
         end
 
@@ -202,9 +203,6 @@ module DataFactory
       #     max_right = 10**scale - 1
       #     "#{random_integer(max_left)}.#{random_integer(max_right)}".to_f
       #   end
-      when 'NUMBER'
-        23.34
-      when 'INTEGER'
       else
         nil
       end
