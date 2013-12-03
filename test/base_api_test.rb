@@ -146,6 +146,13 @@ class BaseAPITest < Test::Unit::TestCase
     end
   end
 
+  def test_generate_data_for_char_field_is_always_full_column_width
+    instance = @klass.new
+    instance.generate_column_data
+    assert_equal(20, instance.column_value('COL14').length)
+  end
+                 
+
 
   # TODO - tests for generate insert
   # TODO - tests for

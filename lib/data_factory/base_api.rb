@@ -163,8 +163,10 @@ module DataFactory
       end
 
       case col.data_type
-      when 'CHAR', 'VARCHAR2', 'CLOB'
+      when 'VARCHAR2', 'CLOB'
         random_string_upto_length(col.data_length)
+      when 'CHAR'
+        random_string_of_length(col.data_length)
       when 'RAW'
         random_hex_string_upto_length(col.data_length)
       when 'DATE', 'DATETIME', 'TIMESTAMP'
