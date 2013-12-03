@@ -43,8 +43,9 @@ module TestHelper
         ['col11','raw',      20, nil, nil, 11,'Y'],
         ['col12','raw',      20, nil, nil, 12,'N'],
         ['col13','char',     20, nil, nil, 13,'Y'],
-        ['col14','char',     20, nil, nil, 14,'N']
-
+        ['col14','char',     20, nil, nil, 14,'N'],
+        ['col15','number',   20, 1,   0,   15,'N'],
+        ['col16','integer',  20, 4,   9,   16,'N']
       ]
       data.each do |d|
         yield d

@@ -151,9 +151,24 @@ class BaseAPITest < Test::Unit::TestCase
     instance.generate_column_data
     assert_equal(20, instance.column_value('COL14').length)
   end
-                 
 
+  def test_generate_data_for_small_integer_is_correct_precision
+    instance = @klass.new
+    1.upto(15) do
+      instance.generate_column_data
+      assert instance.column_value('COL15') < 10
+    end
+  end
 
+  def test_generate_data_for_bigger_integer_is_correct_precision
+    instance = @klass.new
+    1.upto(30) do
+      instance.generate_column_data
+      assert instance.column_value('COL16') < 9999
+    end
+  end
+
+  
   # TODO - tests for generate insert
   # TODO - tests for
 

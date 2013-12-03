@@ -174,7 +174,9 @@ module DataFactory
       when 'NUMBER', 'INTEGER'
         scale = 2
         if col.data_scale && col.data_scale == 0
-          random_integer(9999)
+          # No point in generating massive numbers (eg 10**38), so limit to 10**10
+          max_precision = col.data_precision < 10 ? col.data_precision : 10
+          random_integer((10**max_precision) - 1)
         else
           22.23
         end
