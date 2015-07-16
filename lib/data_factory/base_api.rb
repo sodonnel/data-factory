@@ -169,7 +169,7 @@ module DataFactory
         random_string_of_length(col.data_length)
       when 'RAW'
         random_hex_string_upto_length(col.data_length)
-      when 'DATE', 'DATETIME', 'TIMESTAMP'
+      when 'DATE', 'DATETIME', /TIMESTAMP/
         Time.now
       when 'NUMBER', 'INTEGER'
         scale = 2
@@ -212,7 +212,7 @@ module DataFactory
       case col.data_type
       when 'CHAR', 'VARCHAR2', 'CLOB', 'RAW'
         String
-      when 'DATE', 'DATETIME', 'TIMESTAMP'
+      when 'DATE', 'DATETIME', /TIMESTAMP/
         Time
       when 'INTEGER'
         Integer
