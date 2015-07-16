@@ -25,6 +25,18 @@ module DataFactory
       self.class.table_name
     end
 
+    def schema_name
+      self.class.schema_name
+    end
+
+    def fully_qualified_table_name
+      if self.class.schema_name
+        "#{schema_name}.#{table_name}"
+      else
+        table_name
+      end
+    end
+
     def column_details # :nodoc:
       self.class.column_details
     end
@@ -98,7 +110,7 @@ module DataFactory
     # variabled are stored in @binds.
     def generate_insert
       @binds = Array.new
-      @insert_statement = "insert into #{table_name} ("
+      @insert_statement = "insert into #{fully_qualified_table_name} ("
       @insert_statement << column_details.keys.sort.map { |k| column_detail(k).column_name }.join(',')
       @insert_statement << ') values ('
       @insert_statement << column_details.keys.sort.map { |k|
@@ -239,7 +251,7 @@ module DataFactory
     def validate_columns(params)
       params.keys.each do |k|
         unless column_details.has_key? k.upcase
-          raise DataFactory::ColumnNotInTable, "Column #{k.upcase} is not in #{table_name}"
+          raise DataFactory::ColumnNotInTable, "Column #{k.upcase} is not in #{fully_qualified_table_name}"
         end
       end
     end

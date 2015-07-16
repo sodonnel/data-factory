@@ -23,6 +23,14 @@ class BaseDSLTest < Test::Unit::TestCase
     assert_equal('FOOBAR', @klass.table_name)
   end
 
+  def test_schema_dot_table_can_be_set_as_a_class_instance_variable
+    @klass.set_table_name('sch.foobar')
+    assert_equal('FOOBAR', @klass.table_name)
+    assert_equal('SCH', @klass.schema_name)
+    assert_equal('FOOBAR', @klass.instance_variable_get('@table_name'))
+    assert_equal('SCH', @klass.instance_variable_get('@schema_name'))
+  end
+
   def test_db_interface_is_set_as_a_class_variable
     dbklass = Class.new
     @klass.set_database_interface(dbklass)

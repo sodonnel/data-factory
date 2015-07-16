@@ -60,7 +60,9 @@ To use DataFactory, create a class for each table you want to interface with, an
                                    end
     end
 
-In the class definition, use the set_table_name method to map the class to a particular table on the database.
+In the class definition, use the set_table_name method to map the class to a particular table on the database. If the table is not owned by the user you connect to the database as, then prefix the table with the schema name:
+
+    set_table_name "hr.employees"
 
 Optionally, you can specify default values for columns in the table with the set_column_default method, which takes the table name followed by a value for the column, or a block that generates the value each time it is called, as with the email example.
 

@@ -32,7 +32,7 @@ module DataFactory
 
   module BaseDSL
 
-    attr_reader :table_name, :column_details, :column_defaults, :meta_data_loaded, :populate_nullable_columns
+    attr_reader :table_name, :schema_name, :column_details, :column_defaults, :meta_data_loaded, :populate_nullable_columns
 
     # Pass a database interface object to be used by all DataFactory sub-classes
     # The interface must implement the following two methods:
@@ -65,8 +65,16 @@ module DataFactory
     # Defines the table a subclass of DataFactory interacts with on the database. This
     # method stores the tables in a class instance variable (@table_name) that is shared by
     # all instances of the class, but is not inherited with subclasses.
+    # The table name can optionally be prefixed with the schema - 'schema.table'
     def set_table_name(tab)
-      @table_name = tab.to_s.upcase
+      parts = tab.to_s.upcase.split(/\./)
+      if parts.length == 2
+        @table_name = parts[1]
+        @schema_name = parts[0]
+      else
+        @table_name = parts[0]
+        @schema_name = nil
+      end
       @populate_nullable_columns = false
     end
 
@@ -75,7 +83,7 @@ module DataFactory
     # cause values to be generated for nullable columns in the same way as for not null columns
     # @example
     #    class MyTab < DataFactory::Base
-    #      set_table_name 'my_table'
+    #      set_table_name 'schema.my_table'
     #      populate_nullable_columns
     #    end
     def set_populate_nullable_columns
@@ -148,8 +156,9 @@ module DataFactory
                                   data_scale,
                                   column_id,
                                   nullable
-                           from user_tab_columns
+                           from all_tab_columns
                            where table_name = ?
+                           and owner = #{@schema_name.nil? ? 'user' : "'#{@schema_name}'"}
                            order by column_id asc"
 
       database_interface.execute_sql(table_details_sql, @table_name).each_array do |r|
@@ -162,6 +171,10 @@ module DataFactory
         c.position        = r[5].to_i
         c.nullable        = r[6] == 'N' ? false : true
         @column_details[r[0].upcase] = c
+      end
+      # If there are no columns, then the table does not exist!
+      if @column_details.keys.length == 0
+        raise DataFactory::TableNotExist, "Table #{schema_name.nil? ? '' : schema_name+'.'}#{table_name} does not exist"
       end
       @meta_data_loaded = true
       # This is needed here as some column defaults will have been set
@@ -180,7 +193,7 @@ module DataFactory
 
     def validate_column_default(column_name, column_value)
       unless @column_details.has_key? column_name
-        raise DataFactory::ColumnNotInTable, "Column #{column_name.to_s.upcase} is not in #{table_name}"
+        raise DataFactory::ColumnNotInTable, "Column #{column_name.to_s.upcase} is not in #{schema_name.nil? ? '' : schema_name+'.'}#{table_name}"
       end
     end
 

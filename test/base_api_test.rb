@@ -32,6 +32,17 @@ class BaseAPITest < Test::Unit::TestCase
     assert_equal('FOOBAR', instance.table_name)
   end
 
+  def test_fully_qualified_table_name_correct_when_no_schema
+    instance = @klass.new
+    assert_equal('FOOBAR', instance.fully_qualified_table_name)
+  end
+
+  def test_fully_qualified_table_name_correct_when_schema
+    @klass.set_table_name('sch.foobar')
+    instance = @klass.new
+    assert_equal('SCH.FOOBAR', instance.fully_qualified_table_name)
+  end
+  
   def test_column_default_is_retrieved
     @klass.set_column_default('COL1', 'abcd')
     instance = @klass.new
